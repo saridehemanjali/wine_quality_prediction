@@ -26,26 +26,17 @@ model.fit(X_train, Y_train)
 
 st.header("Enter Wine Details")
 
-# Input fields using sliders
-fixed_acidity = st.slider("Fixed Acidity", 4.0, 16.0, 7.0)
-volatile_acidity = st.slider("Volatile Acidity", 0.1, 1.5, 0.5)
-citric_acid = st.slider("Citric Acid", 0.0, 1.0, 0.3)
-residual_sugar = st.slider("Residual Sugar", 0.5, 15.0, 2.0)
-chlorides = st.slider("Chlorides", 0.01, 0.2, 0.07)
-free_sulfur_dioxide = st.slider("Free Sulfur Dioxide", 1.0, 75.0, 15.0)
-total_sulfur_dioxide = st.slider("Total Sulfur Dioxide", 6.0, 300.0, 46.0)
-density = st.slider("Density", 0.9900, 1.0050, 0.9960)
-pH = st.slider("pH", 2.5, 4.5, 3.3)
-sulphates = st.slider("Sulphates", 0.3, 2.0, 0.6)
-alcohol = st.slider("Alcohol", 8.0, 15.0, 10.0)
+# Create sliders dynamically based on dataset min/max values
+slider_values = {}
+for column in X.columns:
+    min_val = float(X[column].min())
+    max_val = float(X[column].max())
+    mean_val = float(X[column].mean())
+    slider_values[column] = st.slider(column.replace("_", " ").title(), min_val, max_val, mean_val)
 
 # Prediction Button
 if st.button("Predict"):
-    input_data = np.array([[fixed_acidity, volatile_acidity, citric_acid,
-                            residual_sugar, chlorides,
-                            free_sulfur_dioxide, total_sulfur_dioxide,
-                            density, pH, sulphates, alcohol]])
-
+    input_data = np.array([list(slider_values.values())])
     prediction = model.predict(input_data)
 
     if prediction[0] == 1:
